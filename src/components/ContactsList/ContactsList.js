@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 // redux
 import { selectVisibleContacts } from 'redux/selectors';
 import * as contactsOperations from 'redux/contacts/contactsOperations';
+import { contactsActions } from 'redux/contacts/contactsSlice';
 // styles
 import { ContactsListEl, ListItem, Button } from './ContactsList.styled';
 
@@ -21,7 +22,10 @@ export const ContactsList = () => {
         <ListItem key={id}>
           {name}: {number}
           <Button
-            onClick={() => dispatch(contactsOperations.deleteContact(id))}
+            onClick={() => {
+              dispatch(contactsOperations.deleteContact(id));
+              dispatch(contactsActions.deleteContact(id));
+            }}
           >
             Delete
           </Button>

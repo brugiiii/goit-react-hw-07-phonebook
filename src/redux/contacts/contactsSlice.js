@@ -1,5 +1,7 @@
 // redux-toolkit
 import { createSlice } from '@reduxjs/toolkit';
+// nanoid
+import { nanoid } from 'nanoid';
 // redux
 import { fetchContacts } from './contactsOperations';
 
@@ -12,6 +14,25 @@ const initialState = {
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState,
+  reducers: {
+    addContact: {
+      reducer: (state, action) => {
+        return { ...state, items: [...state.items, action.payload] };
+      },
+      prepare: text => ({
+        payload: {
+          ...text,
+          id: nanoid(),
+        },
+      }),
+    },
+    deleteContact: (state, action) => {
+      return {
+        ...state,
+        items: state.items.filter(item => item.id !== action.payload),
+      };
+    },
+  },
   extraReducers: {
     [fetchContacts.pending]: state => {
       return { ...state, isLoading: true, error: null };
@@ -26,4 +47,5 @@ const contactsSlice = createSlice({
   },
 });
 
+export const contactsActions = contactsSlice.actions;
 export default contactsSlice.reducer;
