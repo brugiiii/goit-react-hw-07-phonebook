@@ -43,17 +43,16 @@ const contactsSlice = createSlice({
 
     // delete
     [deleteContact.pending]: (state, action) => {
-      return { ...state, isLoading: true, error: null };
+      return { ...state, error: null };
     },
     [deleteContact.fulfilled]: (state, action) => {
       return {
         ...state,
         items: state.items.filter(item => item.id !== action.payload.id),
-        isLoading: false,
       };
     },
     [deleteContact.rejected]: (state, action) => {
-      return { ...state, isLoading: false, error: action.payload };
+      return { ...state, error: action.payload };
     },
   },
 });

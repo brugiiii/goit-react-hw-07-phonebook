@@ -4,7 +4,7 @@ import { object, string, number } from 'yup';
 
 // redux
 import { useDispatch, useSelector } from 'react-redux';
-import { selectContacts } from 'redux/selectors';
+import { selectContacts, selectIsLoading } from 'redux/selectors';
 import { addContact } from 'redux/contacts/contactsOperations';
 
 // styles
@@ -15,6 +15,8 @@ import {
   Button,
   ErrorMessageEl,
 } from './ContactForm.styled';
+
+import { TailSpin } from 'react-loader-spinner';
 
 const schema = object({
   name: string().required(),
@@ -29,6 +31,7 @@ const initialValues = {
 export const ContactForm = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(selectContacts);
+  const isLoading = useSelector(selectIsLoading);
 
   const onFormSubmit = (values, { resetForm }) => {
     const loweredName = values.name.toLowerCase();
@@ -67,7 +70,26 @@ export const ContactForm = () => {
           />
           <ErrorMessageEl name="number" component="div" />
         </Label>
-        <Button type="submit">add contact</Button>
+        <Button type="submit" disabled={isLoading}>
+          add contact
+          {isLoading && (
+            <TailSpin
+              height="20"
+              width="20"
+              color="#4fa94d"
+              ariaLabel="tail-spin-loading"
+              radius="1"
+              wrapperStyle={{
+                position: 'absolute',
+                top: '50%',
+                marginTop: -10,
+                right: 6,
+              }}
+              wrapperClass=""
+              visible={true}
+            />
+          )}
+        </Button>
       </FormEl>
     </Formik>
   );

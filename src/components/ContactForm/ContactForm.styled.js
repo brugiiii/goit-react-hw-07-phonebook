@@ -31,6 +31,7 @@ export const Button = styled.button`
   text-align: center;
   margin: 0 auto;
   margin-top: 10px;
+  position: relative;
 `;
 
 export const ErrorMessageEl = styled(ErrorMessage)`
