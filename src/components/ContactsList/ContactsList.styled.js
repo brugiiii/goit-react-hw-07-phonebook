@@ -16,4 +16,5 @@ export const ListItem = styled.li`
 
 export const Button = styled.button`
   margin-left: 10px;
+  position: relative;
 `;
