@@ -6,7 +6,6 @@ import { object, string, number } from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectContacts } from 'redux/selectors';
 import { addContact } from 'redux/contacts/contactsOperations';
-import { contactsActions } from 'redux/contacts/contactsSlice';
 
 // styles
 import {
@@ -36,9 +35,7 @@ export const ContactForm = () => {
 
     contacts.find(contact => contact.name.toLowerCase() === loweredName)
       ? alert(`${values.name} is already in contacts`)
-      : dispatch(addContact(values)) &&
-        dispatch(contactsActions.addContact(values)) &&
-        resetForm();
+      : dispatch(addContact(values)) && resetForm();
   };
 
   return (

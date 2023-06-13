@@ -1,9 +1,8 @@
 // redux-toolkit
 import { createSlice } from '@reduxjs/toolkit';
-// nanoid
-import { nanoid } from 'nanoid';
+
 // redux
-import { fetchContacts } from './contactsOperations';
+import { fetchContacts, addContact, deleteContact } from './contactsOperations';
 
 const initialState = {
   items: [],
@@ -14,26 +13,8 @@ const initialState = {
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState,
-  reducers: {
-    addContact: {
-      reducer: (state, action) => {
-        return { ...state, items: [...state.items, action.payload] };
-      },
-      prepare: text => ({
-        payload: {
-          ...text,
-          id: nanoid(),
-        },
-      }),
-    },
-    deleteContact: (state, action) => {
-      return {
-        ...state,
-        items: state.items.filter(item => item.id !== action.payload),
-      };
-    },
-  },
   extraReducers: {
+    // fetch
     [fetchContacts.pending]: state => {
       return { ...state, isLoading: true, error: null };
     },
@@ -44,8 +25,37 @@ const contactsSlice = createSlice({
     [fetchContacts.rejected]: (state, action) => {
       return { ...state, isLoading: false, error: action.payload };
     },
+
+    // add
+    [addContact.pending]: (state, action) => {
+      return { ...state, isLoading: true, error: null };
+    },
+    [addContact.fulfilled]: (state, action) => {
+      return {
+        ...state,
+        items: [...state.items, action.payload],
+        isLoading: false,
+      };
+    },
+    [addContact.rejected]: (state, action) => {
+      return { ...state, isLoading: false, error: action.payload };
+    },
+
+    // delete
+    [deleteContact.pending]: (state, action) => {
+      return { ...state, isLoading: true, error: null };
+    },
+    [deleteContact.fulfilled]: (state, action) => {
+      return {
+        ...state,
+        items: state.items.filter(item => item.id !== action.payload.id),
+        isLoading: false,
+      };
+    },
+    [deleteContact.rejected]: (state, action) => {
+      return { ...state, isLoading: false, error: action.payload };
+    },
   },
 });
 
-export const contactsActions = contactsSlice.actions;
 export default contactsSlice.reducer;
