@@ -1,26 +1,26 @@
-// react
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 // redux
-import { selectVisibleContacts } from 'redux/selectors';
-import * as contactsOperations from 'redux/contacts/contactsOperations';
-import { selectIsLoading } from 'redux/selectors';
-// styles
-import { ContactsListEl, ListItem, Button } from './ContactsList.styled';
+import { useGetContactsQuery } from 'services/contactsAPI';
+import { useSelector } from 'react-redux';
+import { selectFilter } from 'redux/selectors';
+
+// components
 import { TailSpin } from 'react-loader-spinner';
+import { ContactsListItem } from '../ContactsListItem';
+
+// styles
+import { ContactsListEl } from './ContactsList.styled';
 
 export const ContactsList = () => {
-  const dispatch = useDispatch();
-  const contacts = useSelector(selectVisibleContacts);
-  const { fetchAll } = useSelector(selectIsLoading);
+  const { data, isFetching } = useGetContactsQuery();
+  const loweredFilter = useSelector(selectFilter).toLowerCase();
 
-  useEffect(() => {
-    dispatch(contactsOperations.fetchContacts());
-  }, [dispatch]);
+  const contacts = !isFetching
+    ? data.filter(contact => contact.name.toLowerCase().includes(loweredFilter))
+    : [];
 
   return (
     <ContactsListEl>
-      {fetchAll ? (
+      {isFetching ? (
         <TailSpin
           height="80"
           width="80"
@@ -33,16 +33,7 @@ export const ContactsList = () => {
         />
       ) : (
         contacts.map(({ name, number, id }) => (
-          <ListItem key={id}>
-            {name}: {number}
-            <Button
-              onClick={() => {
-                dispatch(contactsOperations.deleteContact(id));
-              }}
-            >
-              Delete
-            </Button>
-          </ListItem>
+          <ContactsListItem key={id} name={name} number={number} id={id} />
         ))
       )}
     </ContactsListEl>

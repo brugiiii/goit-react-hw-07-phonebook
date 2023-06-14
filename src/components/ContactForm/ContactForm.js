@@ -3,9 +3,10 @@ import { Formik } from 'formik';
 import { object, string, number } from 'yup';
 
 // redux
-import { useDispatch, useSelector } from 'react-redux';
-import { selectContacts, selectIsLoading } from 'redux/selectors';
-import { addContact } from 'redux/contacts/contactsOperations';
+import {
+  useAddContactMutation,
+  useGetContactsQuery,
+} from 'services/contactsAPI';
 
 // notification
 import {
@@ -36,9 +37,8 @@ const initialValues = {
 };
 
 export const ContactForm = () => {
-  const dispatch = useDispatch();
-  const contacts = useSelector(selectContacts);
-  const isLoading = useSelector(selectIsLoading);
+  const { data: contacts } = useGetContactsQuery();
+  const [addContact, { isLoading }] = useAddContactMutation();
 
   const onFormSubmit = (values, { resetForm }) => {
     const loweredName = values.name.toLowerCase();
@@ -48,7 +48,7 @@ export const ContactForm = () => {
           `${values.name} is already in contacts`,
           'Error'
         )
-      : dispatch(addContact(values)) && resetForm();
+      : addContact(values) && resetForm();
   };
 
   return (
@@ -81,9 +81,9 @@ export const ContactForm = () => {
             />
             <ErrorMessageEl name="number" component="div" />
           </Label>
-          <Button type="submit" disabled={isLoading.add}>
+          <Button type="submit" disabled={isLoading}>
             add contact
-            {isLoading.add && (
+            {isLoading && (
               <TailSpin
                 height="20"
                 width="20"
