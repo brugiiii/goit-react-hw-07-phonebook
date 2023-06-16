@@ -11,16 +11,17 @@ import { ContactsListItem } from '../ContactsListItem';
 import { ContactsListEl } from './ContactsList.styled';
 
 export const ContactsList = () => {
-  const { data, isFetching } = useGetContactsQuery();
+  const { data, isLoading } = useGetContactsQuery();
+
   const loweredFilter = useSelector(selectFilter).toLowerCase();
 
-  const contacts = !isFetching
-    ? data.filter(contact => contact.name.toLowerCase().includes(loweredFilter))
-    : [];
+  const contacts =
+    !isLoading &&
+    data.filter(contact => contact.name.toLowerCase().includes(loweredFilter));
 
   return (
     <ContactsListEl>
-      {isFetching ? (
+      {isLoading ? (
         <TailSpin
           height="80"
           width="80"
@@ -28,7 +29,6 @@ export const ContactsList = () => {
           ariaLabel="tail-spin-loading"
           radius="1"
           wrapperStyle={{ marginLeft: 'auto', marginRight: 'auto' }}
-          wrapperClass=""
           visible={true}
         />
       ) : (
